@@ -10,17 +10,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 :root{
-  --paper:#E7EBE6; --card:#FDFDFC; --ink:#18212B; --ink-soft:#5C6A73; --line:#C9D1CC;
-  --bajo:#2E6B5E; --medio:#C08418; --alto:#A63822; --mark:#3D5A6C;
-}
-@media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --paper:#131A1E; --card:#1B242A; --ink:#E6EDE9; --ink-soft:#93A3AC; --line:#2E3B43;
-    --bajo:#57B39C; --medio:#E0A93C; --alto:#E0664A; --mark:#7FA6BC;
-  }
-}
-:root[data-theme="dark"]{
-  --paper:#131A1E; --card:#1B242A; --ink:#E6EDE9; --ink-soft:#93A3AC; --line:#2E3B43;
+  --paper:#0B0F12; --card:#151B20; --ink:#F2F5F3; --ink-soft:#96A5AE; --line:#2A353C;
   --bajo:#57B39C; --medio:#E0A93C; --alto:#E0664A; --mark:#7FA6BC;
 }
 *{box-sizing:border-box}
@@ -54,7 +44,7 @@ button,label.filebtn{font:inherit;font-size:13.5px;font-weight:500;cursor:pointe
 button:hover,label.filebtn:hover{border-color:var(--mark)}
 button:focus-visible,label.filebtn:focus-within,input:focus-visible,select:focus-visible{
   outline:2px solid var(--mark);outline-offset:2px}
-button.primary{background:var(--mark);border-color:var(--mark);color:#fff}
+button.primary{background:var(--mark);border-color:var(--mark);color:#0B0F12}
 .fileinput{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
 .status{font-size:12.5px;color:var(--ink-soft);margin-left:auto;text-align:right;
   width:100%;padding-top:4px}
@@ -127,10 +117,10 @@ th{font-weight:600;font-size:12px;color:var(--ink-soft);cursor:pointer;
 th:hover{color:var(--ink)}
 td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
 tbody tr{cursor:pointer}
-tbody tr:hover{background:color-mix(in srgb,var(--mark) 8%,transparent)}
-tbody tr.sel{background:color-mix(in srgb,var(--mark) 15%,transparent)}
+tbody tr:hover{background:color-mix(in srgb,var(--mark) 12%,transparent)}
+tbody tr.sel{background:color-mix(in srgb,var(--mark) 22%,transparent)}
 .chip{display:inline-block;padding:2px 9px;border-radius:2px;font-size:11.5px;
-  font-weight:600;color:#fff}
+  font-weight:600;color:#0B0F12}
 .bar{height:6px;border-radius:1px;display:inline-block;vertical-align:middle;
   margin-right:7px}
 
@@ -158,7 +148,7 @@ footer .wrap{display:block}
 
 @media print{
   .databar,.model,.tablehead,button,label.filebtn,header .lede{display:none}
-  body{background:#fff}
+  body{background:#fff;color:#000}
   section{border-bottom:1px solid #ccc;page-break-inside:avoid}
   footer{display:none}
 }
@@ -296,7 +286,6 @@ footer .wrap{display:block}
 var DATA=[], SEL=null, SORT={k:"riesgo",dir:-1};
 var $=function(s){return document.querySelector(s)};
 
-/* ---------- datos de ejemplo ---------- */
 var NOMBRES=["Quispe Mamani, Ana","Choque Apaza, Luis","Condori Flores, Marisol","Huanca Ticona, Diego",
 "Mamani Laura, Rocío","Apaza Cruz, Javier","Callisaya Poma, Silvia","Chambi Nina, Rodrigo",
 "Limachi Tarqui, Elena","Yujra Mendoza, Carlos","Colque Vargas, Patricia","Paco Huarachi, Ismael",
@@ -320,7 +309,6 @@ function demo(){
   return out;
 }
 
-/* ---------- lectura del Excel ---------- */
 function norm(s){return String(s==null?"":s).toLowerCase()
   .normalize("NFD").replace(/[\u0300-\u036f]/g,"").trim()}
 
@@ -376,7 +364,6 @@ function procesar(wb){
   return out;
 }
 
-/* ---------- modelo ---------- */
 function calcular(){
   var wp=+$("#wp").value, wr=+$("#wr").value, wx=+$("#wx").value, um=+$("#wu").value;
   var tot=wp+wr+wx||1;
@@ -407,7 +394,6 @@ function recomendar(e,um){
 }
 function color(n){return n==="Alto"?"var(--alto)":n==="Medio"?"var(--medio)":"var(--bajo)"}
 
-/* ---------- render ---------- */
 function render(){
   calcular();
   var n=DATA.length;
@@ -437,8 +423,8 @@ function plot(){
   s.push('<rect x="0" y="0" width="'+W+'" height="'+H+'" fill="transparent"/>');
   for(var i=0;i<=10;i+=2){
     var x=m.l+iw*i/10, y=m.t+ih-ih*i/10;
-    s.push('<line class="grid" x1="'+m.l+'" y1="'+y+'" x2="'+(m.l+iw)+'" y2="'+y+'" stroke="var(--line)"/>');
-    s.push('<line class="grid" x1="'+x+'" y1="'+m.t+'" x2="'+x+'" y2="'+(m.t+ih)+'" stroke="var(--line)"/>');
+    s.push('<line x1="'+m.l+'" y1="'+y+'" x2="'+(m.l+iw)+'" y2="'+y+'" stroke="var(--line)"/>');
+    s.push('<line x1="'+x+'" y1="'+m.t+'" x2="'+x+'" y2="'+(m.t+ih)+'" stroke="var(--line)"/>');
     s.push('<text x="'+(m.l-10)+'" y="'+(y+4)+'" text-anchor="end" font-size="11" fill="var(--ink-soft)">'+i+'</text>');
     s.push('<text x="'+x+'" y="'+(m.t+ih+20)+'" text-anchor="middle" font-size="11" fill="var(--ink-soft)">'+i+'</text>');
   }
@@ -498,7 +484,6 @@ function detalle(e){
    '</div><div class="accion"><b>Acción propuesta</b><p style="margin:6px 0 0">'+esc(e.accion)+'</p></div></div>';
 }
 
-/* ---------- entrada / salida ---------- */
 function cargar(rows,msg){
   DATA=rows; SEL=null;
   $("#app").hidden=false; $("#empty").hidden=true; $("#status").textContent=msg;
