@@ -12,6 +12,7 @@
 :root{
   --paper:#0B0F12; --card:#151B20; --ink:#F2F5F3; --ink-soft:#96A5AE; --line:#2A353C;
   --bajo:#57B39C; --medio:#E0A93C; --alto:#E0664A; --mark:#7FA6BC;
+  --accent:#5EC8C0; --accent2:#E0A93C;
 }
 *{box-sizing:border-box}
 html,body{margin:0;padding:0}
@@ -29,7 +30,6 @@ p{margin:0 0 .7em}
 .muted{color:var(--ink-soft)}
 .num{font-variant-numeric:tabular-nums lining-nums}
 
-/* ---------- header ---------- */
 header{padding:32px 0 20px;border-bottom:1px solid var(--line)}
 .eyebrow{font-size:12.5px;color:var(--ink-soft);margin-bottom:8px;
   text-transform:uppercase;letter-spacing:.04em}
@@ -40,11 +40,12 @@ header{padding:32px 0 20px;border-bottom:1px solid var(--line)}
   padding:14px 0;border-bottom:1px solid var(--line)}
 button,label.filebtn{font:inherit;font-size:13.5px;font-weight:500;cursor:pointer;
   border:1px solid var(--line);background:var(--card);color:var(--ink);
-  padding:8px 13px;border-radius:2px;transition:border-color .15s, background .15s}
-button:hover,label.filebtn:hover{border-color:var(--mark)}
+  padding:8px 13px;border-radius:2px;transition:border-color .15s, background .15s, transform .1s}
+button:hover,label.filebtn:hover{border-color:var(--accent);color:var(--accent)}
+button:active,label.filebtn:active{transform:scale(.97)}
 button:focus-visible,label.filebtn:focus-within,input:focus-visible,select:focus-visible{
-  outline:2px solid var(--mark);outline-offset:2px}
-button.primary{background:var(--mark);border-color:var(--mark);color:#0B0F12}
+  outline:2px solid var(--accent);outline-offset:2px}
+button.primary{background:var(--accent);border-color:var(--accent);color:#0B0F12}
 .fileinput{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
 .status{font-size:12.5px;color:var(--ink-soft);margin-left:auto;text-align:right;
   width:100%;padding-top:4px}
@@ -67,7 +68,6 @@ button.primary{background:var(--mark);border-color:var(--mark);color:#0B0F12}
 @media(min-width:720px){.readout .v{font-size:34px}}
 .readout .k{font-size:12.5px;color:var(--ink-soft);display:block;margin-top:6px}
 
-/* ---------- secciones ---------- */
 main{flex:1}
 section{padding:28px 0;border-bottom:1px solid var(--line)}
 section:last-of-type{border-bottom:none}
@@ -88,8 +88,10 @@ section p.muted{margin-top:8px}
 @media(min-width:600px){.model{grid-template-columns:repeat(2,1fr)}}
 @media(min-width:900px){.model{grid-template-columns:repeat(4,1fr)}}
 .ctrl label{font-size:12.5px;display:flex;justify-content:space-between;margin-bottom:6px;
-  gap:8px}
-.ctrl input[type=range]{width:100%;accent-color:var(--mark)}
+  gap:8px;color:var(--ink-soft)}
+.ctrl label .num{color:var(--accent);font-weight:600;font-size:14px}
+.ctrl input[type=range]{width:100%;accent-color:var(--accent);height:6px;cursor:pointer}
+.ctrl input[type=range]::-webkit-slider-thumb{cursor:pointer}
 .formula{background:var(--card);border:1px solid var(--line);padding:14px 16px;
   margin-top:20px;font-size:13px;color:var(--ink-soft);border-radius:2px;line-height:1.55}
 .formula b{color:var(--ink);font-weight:600}
@@ -114,13 +116,18 @@ th,td{padding:8px 10px;text-align:left;border-bottom:1px solid var(--line);white
 @media(min-width:720px){th,td{padding:9px 12px}}
 th{font-weight:600;font-size:12px;color:var(--ink-soft);cursor:pointer;
   position:sticky;top:0;background:var(--card);user-select:none}
-th:hover{color:var(--ink)}
+th:hover{color:var(--accent)}
 td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
+/* Resaltar nota final */
+td.final b{font-size:15px;color:var(--accent);font-family:"Bricolage Grotesque",sans-serif;
+  letter-spacing:-.01em}
+/* Resaltar índice de riesgo */
+td.riesgo b{font-size:15px;font-weight:700;color:var(--ink)}
 tbody tr{cursor:pointer}
-tbody tr:hover{background:color-mix(in srgb,var(--mark) 12%,transparent)}
-tbody tr.sel{background:color-mix(in srgb,var(--mark) 22%,transparent)}
-.chip{display:inline-block;padding:2px 9px;border-radius:2px;font-size:11.5px;
-  font-weight:600;color:#0B0F12}
+tbody tr:hover{background:color-mix(in srgb,var(--accent) 10%,transparent)}
+tbody tr.sel{background:color-mix(in srgb,var(--accent) 20%,transparent)}
+.chip{display:inline-block;padding:3px 10px;border-radius:2px;font-size:11.5px;
+  font-weight:700;color:#0B0F12;letter-spacing:.02em}
 .bar{height:6px;border-radius:1px;display:inline-block;vertical-align:middle;
   margin-right:7px}
 
@@ -134,23 +141,42 @@ tbody tr.sel{background:color-mix(in srgb,var(--mark) 22%,transparent)}
 .detail .grid3 b{display:block;font-size:22px;font-family:"Bricolage Grotesque",sans-serif;
   letter-spacing:-.02em}
 .detail .grid3 span{font-size:12.5px}
-.accion{border-left:3px solid var(--mark);padding-left:14px;margin-top:14px;
+.accion{border-left:3px solid var(--accent);padding-left:14px;margin-top:14px;
   font-size:14px}
 
-/* ---------- estado vacío ---------- */
+/* ---------- contador de tabla ---------- */
+.tablecount{font-size:12.5px;color:var(--ink-soft);margin-left:auto;align-self:center}
+.tablecount b{color:var(--accent);font-weight:700}
+
 .empty{padding:40px 0;color:var(--ink-soft);max-width:62ch}
 
-/* ---------- footer ---------- */
 footer{margin-top:auto;padding:28px 0 40px;border-top:1px solid var(--line);
   font-size:12.5px;color:var(--ink-soft);background:var(--paper)}
-footer a{color:var(--mark)}
+footer a{color:var(--accent)}
 footer .wrap{display:block}
+
+/* ---------- tooltip personalizado ---------- */
+[data-tip]{position:relative}
+[data-tip]:hover::after{
+  content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);left:50%;
+  transform:translateX(-50%);background:#000;color:#fff;padding:6px 10px;
+  border-radius:3px;font-size:12px;white-space:nowrap;z-index:10;
+  pointer-events:none;opacity:.95;font-weight:400;letter-spacing:0;
+  box-shadow:0 4px 12px rgba(0,0,0,.3);animation:fadeIn .15s ease-out
+}
+[data-tip]:hover::before{
+  content:'';position:absolute;bottom:100%;left:50%;transform:translateX(-50%);
+  border:5px solid transparent;border-top-color:#000;z-index:10;pointer-events:none
+}
+@keyframes fadeIn{from{opacity:0;transform:translateX(-50%) translateY(4px)}
+  to{opacity:.95;transform:translateX(-50%) translateY(0)}}
 
 @media print{
   .databar,.model,.tablehead,button,label.filebtn,header .lede{display:none}
   body{background:#fff;color:#000}
   section{border-bottom:1px solid #ccc;page-break-inside:avoid}
   footer{display:none}
+  [data-tip]::after,[data-tip]::before{display:none}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
@@ -170,13 +196,13 @@ footer .wrap{display:block}
 
 <div class="wrap">
  <div class="databar">
-  <label class="filebtn">Cargar Excel
+  <label class="filebtn" data-tip="Haz clic para cargar tu Excel y graficar los datos">Cargar Excel
    <input class="fileinput" type="file" id="file" accept=".xlsx,.xls,.csv">
   </label>
-  <button id="demo">Datos de ejemplo</button>
-  <button id="tpl">Descargar plantilla</button>
-  <button id="csv">Exportar lista de riesgo</button>
-  <button id="print">Imprimir informe</button>
+  <button id="demo" data-tip="Ver un curso simulado de 32 estudiantes">Datos de ejemplo</button>
+  <button id="tpl" data-tip="Descargar Excel con la estructura correcta">Descargar plantilla</button>
+  <button id="csv" data-tip="Exportar estudiantes en riesgo a CSV">Exportar lista de riesgo</button>
+  <button id="print" data-tip="Imprimir el informe completo en PDF">Imprimir informe</button>
   <span class="status" id="status">Sin datos cargados</span>
  </div>
 </div>
@@ -210,13 +236,13 @@ footer .wrap{display:block}
   recalcula al instante. Así el indicador responde a tu planificación, no al revés.</p>
   <div class="model">
    <div class="ctrl"><label>Peso participación <span class="num" id="lp">30%</span></label>
-    <input type="range" id="wp" min="0" max="60" step="5" value="30"></div>
+    <input type="range" id="wp" min="0" max="60" step="5" value="30" data-tip="Cuánto pesa la participación en la nota final"></div>
    <div class="ctrl"><label>Peso prácticas <span class="num" id="lr">30%</span></label>
-    <input type="range" id="wr" min="0" max="60" step="5" value="30"></div>
+    <input type="range" id="wr" min="0" max="60" step="5" value="30" data-tip="Cuánto pesan las prácticas en la nota final"></div>
    <div class="ctrl"><label>Peso parcial <span class="num" id="lx">40%</span></label>
-    <input type="range" id="wx" min="0" max="80" step="5" value="40"></div>
+    <input type="range" id="wx" min="0" max="80" step="5" value="40" data-tip="Cuánto pesa el primer parcial en la nota final"></div>
    <div class="ctrl"><label>Nota mínima <span class="num" id="lu">5.1</span></label>
-    <input type="range" id="wu" min="4" max="7" step="0.1" value="5.1"></div>
+    <input type="range" id="wu" min="4" max="7" step="0.1" value="5.1" data-tip="Nota a partir de la cual el estudiante aprueba"></div>
   </div>
   <div class="formula">
    <p><b>Nota final</b> = participación × peso + prácticas × peso + parcial × peso, normalizado a 10.</p>
@@ -238,10 +264,11 @@ footer .wrap{display:block}
  </section>
 
  <section>
-  <h2>Detalle por estudiante</h2>
   <div class="tablehead">
+   <h2 style="margin:0">Detalle por estudiante</h2>
+   <span class="tablecount" id="tablecount"></span>
    <input type="search" id="q" placeholder="Buscar estudiante">
-   <select id="filtro">
+   <select id="filtro" data-tip="Filtrar por nivel de riesgo">
     <option value="todos">Todos los niveles</option>
     <option value="Alto">Solo riesgo alto</option>
     <option value="Medio">Solo riesgo medio</option>
@@ -455,11 +482,17 @@ function tabla(){
   var h=rows.map(function(e){
     return '<tr data-n="'+esc(e.nombre)+'"><td>'+esc(e.nombre)+'</td>'+
       '<td class="n">'+e.part.toFixed(1)+'</td><td class="n">'+e.prac.toFixed(1)+'</td>'+
-      '<td class="n">'+e.parc.toFixed(1)+'</td><td class="n"><b>'+e.final.toFixed(2)+'</b></td>'+
-      '<td class="n"><span class="bar" style="width:'+(e.riesgo*.42)+'px;background:'+color(e.nivel)+'"></span>'+e.riesgo+'</td>'+
+      '<td class="n">'+e.parc.toFixed(1)+'</td><td class="n final"><b>'+e.final.toFixed(2)+'</b></td>'+
+      '<td class="n riesgo"><span class="bar" style="width:'+(e.riesgo*.42)+'px;background:'+color(e.nivel)+'"></span><b>'+e.riesgo+'</b></td>'+
       '<td><span class="chip" style="background:'+color(e.nivel)+'">'+e.nivel+'</span></td></tr>';
   }).join("");
   $("#tbody").innerHTML=h||'<tr><td colspan="7" class="muted">Ningún estudiante coincide con el filtro.</td></tr>';
+  // Contador
+  var total=DATA.length, visibles=rows.length;
+  var filtro_txt = visibles===total
+    ? '<b>'+total+'</b> estudiantes en total'
+    : 'Mostrando <b>'+visibles+'</b> de <b>'+total+'</b> estudiantes';
+  $("#tablecount").innerHTML=filtro_txt;
   Array.prototype.forEach.call($("#tbody").rows,function(tr){
     tr.onclick=function(){
       var e=DATA.filter(function(x){return x.nombre===tr.dataset.n})[0];
@@ -479,7 +512,7 @@ function detalle(e){
    '<div><b class="num">'+e.part.toFixed(1)+'</b><span class="muted">Participación</span></div>'+
    '<div><b class="num">'+e.prac.toFixed(1)+'</b><span class="muted">Prácticas</span></div>'+
    '<div><b class="num">'+e.parc.toFixed(1)+'</b><span class="muted">1er parcial</span></div>'+
-   '<div><b class="num">'+e.final.toFixed(2)+'</b><span class="muted">Nota final</span></div>'+
+   '<div><b class="num" style="color:var(--accent)">'+e.final.toFixed(2)+'</b><span class="muted">Nota final</span></div>'+
    '<div><b class="num" style="color:'+color(e.nivel)+'">'+e.riesgo+'</b><span class="muted">Riesgo '+e.nivel.toLowerCase()+'</span></div>'+
    '</div><div class="accion"><b>Acción propuesta</b><p style="margin:6px 0 0">'+esc(e.accion)+'</p></div></div>';
 }
