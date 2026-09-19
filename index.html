@@ -10,173 +10,121 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 :root{
-  --paper:#0B0F12; --card:#151B20; --ink:#F2F5F3; --ink-soft:#96A5AE; --line:#2A353C;
-  --bajo:#57B39C; --medio:#E0A93C; --alto:#E0664A; --mark:#7FA6BC;
-  --accent:#5EC8C0; --accent2:#E0A93C;
+  --paper:#E7EBE6; --card:#FDFDFC; --ink:#18212B; --ink-soft:#5C6A73; --line:#C9D1CC;
+  --bajo:#2E6B5E; --medio:#C08418; --alto:#A63822; --mark:#3D5A6C;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#131A1E; --card:#1B242A; --ink:#E6EDE9; --ink-soft:#93A3AC; --line:#2E3B43;
+    --bajo:#57B39C; --medio:#E0A93C; --alto:#E0664A; --mark:#7FA6BC;
+  }
 }
 *{box-sizing:border-box}
-html,body{margin:0;padding:0}
-body{background:var(--paper);color:var(--ink);
+body{margin:0;background:var(--paper);color:var(--ink);
   font-family:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
-  font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;
-  display:flex;flex-direction:column;min-height:100vh}
-.wrap{max-width:1140px;margin:0 auto;padding:0 20px;width:100%}
+  font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1140px;margin:0 auto;padding:0 20px}
 h1,h2,h3{font-family:"Bricolage Grotesque","IBM Plex Sans",sans-serif;font-weight:800;
-  letter-spacing:-.02em;margin:0;line-height:1.1}
-h1{font-size:clamp(24px,4.5vw,40px)}
-h2{font-size:clamp(17px,2.4vw,23px);font-weight:600;letter-spacing:-.015em}
+  letter-spacing:-.02em;margin:0;line-height:1.05}
+h1{font-size:clamp(28px,5vw,46px)}
+h2{font-size:clamp(19px,2.6vw,25px);font-weight:600;letter-spacing:-.015em}
 h3{font-size:16px;font-weight:600}
 p{margin:0 0 .7em}
 .muted{color:var(--ink-soft)}
 .num{font-variant-numeric:tabular-nums lining-nums}
 
-header{padding:32px 0 20px;border-bottom:1px solid var(--line)}
-.eyebrow{font-size:12.5px;color:var(--ink-soft);margin-bottom:8px;
-  text-transform:uppercase;letter-spacing:.04em}
-.lede{max-width:62ch;margin-top:12px;color:var(--ink-soft)}
+header{padding:38px 0 22px;border-bottom:1px solid var(--line)}
+.eyebrow{font-size:13px;color:var(--ink-soft);margin-bottom:10px}
+.lede{max-width:62ch;margin-top:14px;color:var(--ink-soft)}
 
-/* ---------- barra de datos ---------- */
-.databar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;
-  padding:14px 0;border-bottom:1px solid var(--line)}
-button,label.filebtn{font:inherit;font-size:13.5px;font-weight:500;cursor:pointer;
+.databar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;
+  padding:16px 0;border-bottom:1px solid var(--line)}
+button,label.filebtn{font:inherit;font-size:14px;font-weight:500;cursor:pointer;
   border:1px solid var(--line);background:var(--card);color:var(--ink);
-  padding:8px 13px;border-radius:2px;transition:border-color .15s, background .15s, transform .1s}
-button:hover,label.filebtn:hover{border-color:var(--accent);color:var(--accent)}
-button:active,label.filebtn:active{transform:scale(.97)}
+  padding:8px 14px;border-radius:2px;transition:border-color .15s}
+button:hover,label.filebtn:hover{border-color:var(--mark)}
 button:focus-visible,label.filebtn:focus-within,input:focus-visible,select:focus-visible{
-  outline:2px solid var(--accent);outline-offset:2px}
-button.primary{background:var(--accent);border-color:var(--accent);color:#0B0F12}
+  outline:2px solid var(--mark);outline-offset:2px}
+button:disabled{opacity:.4;cursor:not-allowed}
 .fileinput{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
-.status{font-size:12.5px;color:var(--ink-soft);margin-left:auto;text-align:right;
-  width:100%;padding-top:4px}
-@media(min-width:720px){.status{width:auto;padding-top:0}}
+.status{font-size:13px;color:var(--ink-soft);margin-left:auto;text-align:right}
 
-/* ---------- lectura principal ---------- */
-.readout{display:grid;grid-template-columns:repeat(2,1fr);
-  border-bottom:1px solid var(--line);margin-top:24px}
-@media(min-width:720px){.readout{grid-template-columns:repeat(5,1fr)}}
-.readout > div{padding:16px 12px 16px 0;border-top:1px solid var(--line)}
-@media(min-width:720px){.readout > div{border-top:none}}
-.readout > div:nth-child(odd){padding-right:12px}
-.readout > div:nth-child(even){padding-left:12px;border-left:1px solid var(--line)}
-@media(min-width:720px){
-  .readout > div{padding:18px 18px 18px 0}
-  .readout > div + div{padding-left:18px;border-left:1px solid var(--line)}
-}
-.readout .v{font-family:"Bricolage Grotesque",sans-serif;font-size:30px;font-weight:800;
+.readout{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+  gap:0;border-bottom:1px solid var(--line);margin-top:20px}
+.readout div{padding:20px 20px 20px 0}
+.readout div + div{padding-left:20px;border-left:1px solid var(--line)}
+.readout .v{font-family:"Bricolage Grotesque",sans-serif;font-size:38px;font-weight:800;
   letter-spacing:-.03em;display:block;line-height:1}
-@media(min-width:720px){.readout .v{font-size:34px}}
-.readout .k{font-size:12.5px;color:var(--ink-soft);display:block;margin-top:6px}
+.readout .k{font-size:13px;color:var(--ink-soft);display:block;margin-top:6px}
 
-main{flex:1}
-section{padding:28px 0;border-bottom:1px solid var(--line)}
-section:last-of-type{border-bottom:none}
-section p.muted{margin-top:8px}
-
-/* ---------- tira de riesgo ---------- */
-.strip{display:flex;gap:2px;height:70px;align-items:flex-end;margin:18px 0 10px}
-@media(min-width:720px){.strip{height:88px}}
+section{padding:30px 0;border-bottom:1px solid var(--line)}
+.strip{display:flex;gap:2px;height:88px;align-items:flex-end;margin:18px 0 10px}
 .tick{flex:1 1 0;min-width:3px;border-radius:1px 1px 0 0;cursor:pointer;
   transition:opacity .12s}
 .tick:hover{opacity:.6}
-.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--ink-soft)}
+.legend{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;color:var(--ink-soft)}
 .dot{width:9px;height:9px;display:inline-block;border-radius:50%;margin-right:6px;
   vertical-align:baseline}
 
-/* ---------- controles del modelo ---------- */
-.model{display:grid;grid-template-columns:1fr;gap:16px;margin-top:16px}
-@media(min-width:600px){.model{grid-template-columns:repeat(2,1fr)}}
-@media(min-width:900px){.model{grid-template-columns:repeat(4,1fr)}}
-.ctrl label{font-size:12.5px;display:flex;justify-content:space-between;margin-bottom:6px;
-  gap:8px;color:var(--ink-soft)}
-.ctrl label .num{color:var(--accent);font-weight:600;font-size:14px}
-.ctrl input[type=range]{width:100%;accent-color:var(--accent);height:6px;cursor:pointer}
-.ctrl input[type=range]::-webkit-slider-thumb{cursor:pointer}
+.model{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:18px;
+  margin-top:16px}
+.ctrl label{font-size:13px;display:flex;justify-content:space-between;margin-bottom:6px}
+.ctrl input[type=range]{width:100%;accent-color:var(--mark)}
 .formula{background:var(--card);border:1px solid var(--line);padding:14px 16px;
-  margin-top:20px;font-size:13px;color:var(--ink-soft);border-radius:2px;line-height:1.55}
+  margin-top:20px;font-size:13.5px;color:var(--ink-soft);border-radius:2px}
 .formula b{color:var(--ink);font-weight:600}
-.formula p{margin-bottom:.6em}
-.formula p:last-child{margin-bottom:0}
 
-/* ---------- dispersión ---------- */
 .plot{width:100%;height:auto;display:block;margin-top:14px}
+.plot text{font-family:"IBM Plex Sans",sans-serif;font-size:11px;fill:var(--ink-soft)}
+.plot .grid{stroke:var(--line);stroke-width:1}
+.plot .axis{stroke:var(--ink-soft);stroke-width:1}
 
-/* ---------- tabla ---------- */
-.tablehead{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:16px 0 10px}
-input[type=search],select{font:inherit;font-size:13.5px;padding:8px 10px;border-radius:2px;
-  border:1px solid var(--line);background:var(--card);color:var(--ink);width:100%}
-@media(min-width:600px){
-  input[type=search]{flex:1;min-width:200px;width:auto}
-  select{width:auto}
-}
-.tablebox{overflow-x:auto;border:1px solid var(--line);background:var(--card);
-  border-radius:2px;-webkit-overflow-scrolling:touch}
-table{border-collapse:collapse;width:100%;min-width:560px;font-size:13.5px}
-th,td{padding:8px 10px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
-@media(min-width:720px){th,td{padding:9px 12px}}
-th{font-weight:600;font-size:12px;color:var(--ink-soft);cursor:pointer;
+.tablehead{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:16px 0 10px}
+input[type=search],select{font:inherit;font-size:14px;padding:7px 10px;border-radius:2px;
+  border:1px solid var(--line);background:var(--card);color:var(--ink)}
+.tablebox{overflow-x:auto;border:1px solid var(--line);background:var(--card);border-radius:2px}
+table{border-collapse:collapse;width:100%;min-width:720px;font-size:14px}
+th,td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-weight:600;font-size:12.5px;color:var(--ink-soft);cursor:pointer;
   position:sticky;top:0;background:var(--card);user-select:none}
-th:hover{color:var(--accent)}
+th:hover{color:var(--ink)}
 td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}
-/* Resaltar nota final */
-td.final b{font-size:15px;color:var(--accent);font-family:"Bricolage Grotesque",sans-serif;
-  letter-spacing:-.01em}
-/* Resaltar índice de riesgo */
-td.riesgo b{font-size:15px;font-weight:700;color:var(--ink)}
 tbody tr{cursor:pointer}
-tbody tr:hover{background:color-mix(in srgb,var(--accent) 10%,transparent)}
-tbody tr.sel{background:color-mix(in srgb,var(--accent) 20%,transparent)}
-.chip{display:inline-block;padding:3px 10px;border-radius:2px;font-size:11.5px;
-  font-weight:700;color:#0B0F12;letter-spacing:.02em}
+tbody tr:hover{background:color-mix(in srgb,var(--mark) 8%,transparent)}
+tbody tr.sel{background:color-mix(in srgb,var(--mark) 15%,transparent)}
+.chip{display:inline-block;padding:2px 9px;border-radius:2px;font-size:12px;
+  font-weight:600;color:#fff}
 .bar{height:6px;border-radius:1px;display:inline-block;vertical-align:middle;
   margin-right:7px}
 
-/* ---------- panel detalle ---------- */
-.detail{background:var(--card);border:1px solid var(--line);padding:18px;
-  margin-top:16px;border-radius:2px}
-@media(min-width:720px){.detail{padding:20px}}
-.detail .grid3{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin:14px 0}
-@media(min-width:600px){.detail .grid3{grid-template-columns:repeat(3,1fr)}}
-@media(min-width:900px){.detail .grid3{grid-template-columns:repeat(5,1fr)}}
-.detail .grid3 b{display:block;font-size:22px;font-family:"Bricolage Grotesque",sans-serif;
-  letter-spacing:-.02em}
-.detail .grid3 span{font-size:12.5px}
-.accion{border-left:3px solid var(--accent);padding-left:14px;margin-top:14px;
-  font-size:14px}
+.detail{background:var(--card);border:1px solid var(--line);padding:20px;margin-top:18px;
+  border-radius:2px}
+.detail .grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+  gap:14px;margin:14px 0}
+.detail .grid3 b{display:block;font-size:24px;font-family:"Bricolage Grotesque",sans-serif}
+.accion{border-left:3px solid var(--mark);padding-left:14px;margin-top:14px}
 
-/* ---------- contador de tabla ---------- */
-.tablecount{font-size:12.5px;color:var(--ink-soft);margin-left:auto;align-self:center}
-.tablecount b{color:var(--accent);font-weight:700}
+.empty{padding:40px 0;color:var(--ink-soft);max-width:60ch}
+footer{padding:28px 0 60px;font-size:13px;color:var(--ink-soft)}
+footer a{color:var(--mark)}
 
-.empty{padding:40px 0;color:var(--ink-soft);max-width:62ch}
-
-footer{margin-top:auto;padding:28px 0 40px;border-top:1px solid var(--line);
-  font-size:12.5px;color:var(--ink-soft);background:var(--paper)}
-footer a{color:var(--accent)}
-footer .wrap{display:block}
-
-/* ---------- tooltip personalizado ---------- */
-[data-tip]{position:relative}
-[data-tip]:hover::after{
-  content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);left:50%;
-  transform:translateX(-50%);background:#000;color:#fff;padding:6px 10px;
-  border-radius:3px;font-size:12px;white-space:nowrap;z-index:10;
-  pointer-events:none;opacity:.95;font-weight:400;letter-spacing:0;
-  box-shadow:0 4px 12px rgba(0,0,0,.3);animation:fadeIn .15s ease-out
-}
-[data-tip]:hover::before{
-  content:'';position:absolute;bottom:100%;left:50%;transform:translateX(-50%);
-  border:5px solid transparent;border-top-color:#000;z-index:10;pointer-events:none
-}
-@keyframes fadeIn{from{opacity:0;transform:translateX(-50%) translateY(4px)}
-  to{opacity:.95;transform:translateX(-50%) translateY(0)}}
-
+/* ---------- PRINT CORREGIDO ---------- */
 @media print{
-  .databar,.model,.tablehead,button,label.filebtn,header .lede{display:none}
-  body{background:#fff;color:#000}
+  .databar, .model, .tablehead, button, label.filebtn{display:none}
+  header .lede{display:none}
+  body{background:#fff;color:#000;font-size:12px}
   section{border-bottom:1px solid #ccc;page-break-inside:avoid}
-  footer{display:none}
-  [data-tip]::after,[data-tip]::before{display:none}
+  .readout{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+  .readout .v{font-size:24px}
+  .tablebox{overflow:visible;border:none}
+  table{min-width:auto;font-size:10px}
+  th,td{padding:4px 6px}
+  .strip{height:60px}
+  .plot{max-height:300px}
+  footer{font-size:10px}
+  h1{font-size:24px}
+  h2{font-size:16px}
+  h3{font-size:13px}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
@@ -187,22 +135,23 @@ footer .wrap{display:block}
  <div class="wrap">
   <div class="eyebrow">Analítica del aprendizaje · Evaluación por competencias</div>
   <h1>Alerta temprana</h1>
-  <p class="lede">Carga el centralizador en Excel y el tablero estima el desempeño de cada
-  estudiante a partir de su participación, sus prácticas y su primer parcial. Señala quién
-  está en riesgo, propone una acción concreta y deja a la vista el cálculo completo para que
-  puedas ajustarlo a tu criterio.</p>
+  <p class="lede">Carga el centralizador en Excel y el tablero calcula el desempeño de cada
+  estudiante en participación, prácticas y primer parcial, estima su riesgo académico y propone
+  una acción concreta. El cálculo es visible y ajustable: ningún estudiante queda marcado por
+  una regla que no puedas explicar.</p>
  </div>
 </header>
 
 <div class="wrap">
  <div class="databar">
-  <label class="filebtn" data-tip="Haz clic para cargar tu Excel y graficar los datos">Cargar Excel
+  <label class="filebtn" title="Carga el Excel centralizador con las 3 hojas">Cargar Excel
    <input class="fileinput" type="file" id="file" accept=".xlsx,.xls,.csv">
   </label>
-  <button id="demo" data-tip="Ver un curso simulado de 32 estudiantes">Datos de ejemplo</button>
-  <button id="tpl" data-tip="Descargar Excel con la estructura correcta">Descargar plantilla</button>
-  <button id="csv" data-tip="Exportar estudiantes en riesgo a CSV">Exportar lista de riesgo</button>
-  <button id="print" data-tip="Imprimir el informe completo en PDF">Imprimir informe</button>
+  <button id="demo" title="Carga 32 estudiantes con datos simulados normales">Datos de ejemplo (A)</button>
+  <button id="demoB" title="Carga 32 estudiantes con casos de incidencia">Datos con incidencias (B)</button>
+  <button id="tpl" title="Descarga Excel con la estructura esperada">Descargar plantilla</button>
+  <button id="csv" title="Exporta estudiantes en riesgo a CSV" disabled>Exportar lista de riesgo</button>
+  <button id="print" title="Imprime el informe completo (con datos)">Imprimir informe</button>
   <span class="status" id="status">Sin datos cargados</span>
  </div>
 </div>
@@ -212,15 +161,15 @@ footer .wrap{display:block}
  <div class="readout">
   <div><span class="v num" id="rTotal">—</span><span class="k">estudiantes</span></div>
   <div><span class="v num" id="rProm">—</span><span class="k">promedio final sobre 10</span></div>
-  <div><span class="v num" id="rAlto" style="color:var(--alto)">—</span><span class="k">riesgo alto</span></div>
-  <div><span class="v num" id="rMedio" style="color:var(--medio)">—</span><span class="k">riesgo medio</span></div>
+  <div><span class="v num" id="rAlto" style="color:var(--alto)">—</span><span class="k">en riesgo alto</span></div>
+  <div><span class="v num" id="rMedio" style="color:var(--medio)">—</span><span class="k">en riesgo medio</span></div>
   <div><span class="v num" id="rPart">—</span><span class="k">participación media</span></div>
  </div>
 
  <section>
-  <h2>Un trazo por estudiante</h2>
-  <p class="muted">Ordenados de menor a mayor nota final. La altura indica la nota y el color,
-  el nivel de riesgo. Haz clic en cualquier trazo para ver el detalle del caso.</p>
+  <h2>El curso entero, un trazo por estudiante</h2>
+  <p class="muted" style="margin-top:8px">Ordenados de menor a mayor nota final. La altura es la
+  nota; el color, el nivel de riesgo. Haz clic en un trazo para ver el caso.</p>
   <div class="strip" id="strip"></div>
   <div class="legend">
    <span><i class="dot" style="background:var(--alto)"></i>Riesgo alto</span>
@@ -232,44 +181,43 @@ footer .wrap{display:block}
 
  <section>
   <h2>Cómo se calcula</h2>
-  <p class="muted">Los pesos y el umbral son ajustables: muévelos y todo el tablero se
-  recalcula al instante. Así el indicador responde a tu planificación, no al revés.</p>
+  <p class="muted" style="margin-top:8px">Ajusta los pesos a tu planificación y el umbral a tu
+  criterio. Todo el tablero se recalcula al instante.</p>
   <div class="model">
    <div class="ctrl"><label>Peso participación <span class="num" id="lp">30%</span></label>
-    <input type="range" id="wp" min="0" max="60" step="5" value="30" data-tip="Cuánto pesa la participación en la nota final"></div>
+    <input type="range" id="wp" min="0" max="60" step="5" value="30"></div>
    <div class="ctrl"><label>Peso prácticas <span class="num" id="lr">30%</span></label>
-    <input type="range" id="wr" min="0" max="60" step="5" value="30" data-tip="Cuánto pesan las prácticas en la nota final"></div>
+    <input type="range" id="wr" min="0" max="60" step="5" value="30"></div>
    <div class="ctrl"><label>Peso parcial <span class="num" id="lx">40%</span></label>
-    <input type="range" id="wx" min="0" max="80" step="5" value="40" data-tip="Cuánto pesa el primer parcial en la nota final"></div>
-   <div class="ctrl"><label>Nota mínima <span class="num" id="lu">5.1</span></label>
-    <input type="range" id="wu" min="4" max="7" step="0.1" value="5.1" data-tip="Nota a partir de la cual el estudiante aprueba"></div>
+    <input type="range" id="wx" min="0" max="80" step="5" value="40"></div>
+   <div class="ctrl"><label>Nota mínima de aprobación <span class="num" id="lu">5.1</span></label>
+    <input type="range" id="wu" min="4" max="7" step="0.1" value="5.1"></div>
   </div>
   <div class="formula">
    <p><b>Nota final</b> = participación × peso + prácticas × peso + parcial × peso, normalizado a 10.</p>
-   <p><b>Índice de riesgo</b> (0 a 100): hasta 60 puntos por la distancia a la nota mínima;
-   hasta 20 puntos si la participación cae por debajo de 5; hasta 20 puntos si la brecha entre
-   prácticas y parcial supera los 3 puntos.</p>
-   <p><b>Cortes:</b> alto desde 55, medio desde 30. La brecha pesa porque un estudiante con
-   prácticas altas y parcial bajo no está desconectado: está desalineado con el instrumento
-   de evaluación, y eso se atiende distinto.</p>
+   <p><b>Índice de riesgo</b> (0 a 100) = 60 puntos por la distancia bajo la nota mínima,
+   + 20 puntos si la participación es menor a 5, + 20 puntos si hay una brecha mayor a 3 puntos
+   entre prácticas y parcial (señal de que el estudiante entrega pero no domina).</p>
+   <p style="margin:0"><b>Corte</b>: riesgo alto desde 55, medio desde 30. La brecha se pondera
+   porque un alumno con prácticas altas y parcial bajo no es un alumno desconectado, es un alumno
+   mal alineado: la intervención que necesita es distinta.</p>
   </div>
  </section>
 
  <section>
   <h2>Participación frente a parcial</h2>
-  <p class="muted">Cada punto es un estudiante. El cuadrante inferior izquierdo concentra la
-  deserción probable; el inferior derecho, los problemas de alineación entre práctica y examen.</p>
+  <p class="muted" style="margin-top:8px">Cada punto es un estudiante. El cuadrante inferior
+  izquierdo concentra la deserción probable; el inferior derecho, el problema de alineación.</p>
   <svg class="plot" id="plot" viewBox="0 0 700 420" role="img"
        aria-label="Dispersión de participación contra nota del primer parcial"></svg>
  </section>
 
- <section>
+ <section style="border-bottom:none">
+  <h2>Detalle por estudiante</h2>
   <div class="tablehead">
-   <h2 style="margin:0">Detalle por estudiante</h2>
-   <span class="tablecount" id="tablecount"></span>
-   <input type="search" id="q" placeholder="Buscar estudiante">
-   <select id="filtro" data-tip="Filtrar por nivel de riesgo">
-    <option value="todos">Todos los niveles</option>
+   <input type="search" id="q" placeholder="Buscar estudiante" style="flex:1;min-width:200px">
+   <select id="filtro">
+    <option value="todos">Todos los niveles de riesgo</option>
     <option value="Alto">Solo riesgo alto</option>
     <option value="Medio">Solo riesgo medio</option>
     <option value="Bajo">Solo riesgo bajo</option>
@@ -291,20 +239,18 @@ footer .wrap{display:block}
 
 <div class="wrap empty" id="empty">
  <h2>Empieza por los datos</h2>
- <p>Pulsa <b>Datos de ejemplo</b> para ver el tablero con un curso simulado de 32 estudiantes,
- o <b>Descargar plantilla</b> para obtener un Excel con la estructura que el tablero espera:
- tres hojas llamadas <b>Participaciones</b>, <b>PRACTICAS</b> y <b>1er_Parcial</b>, cada una
- con una columna de nombre y una de puntaje sobre 10.</p>
- <p>Si tu centralizador ya existe con otros nombres, el tablero intenta reconocerlos: busca
- hojas cuyo nombre contenga «particip», «practic» o «parcial», y dentro de cada una, la
- primera columna cuyo encabezado contenga «sobre» y «10».</p>
+ <p style="margin-top:10px">Pulsa <b>Datos de ejemplo (A)</b> para ver el tablero con un curso
+ simulado sin incidencias, o <b>Datos con incidencias (B)</b> para ver el comportamiento con
+ casos de riesgo alto. También puedes <b>Cargar Excel</b> con tu propio centralizador.</p>
+ <p>El tablero espera tres hojas: <b>Participaciones</b>, <b>PRACTICAS</b> y <b>1er_Parcial</b>,
+ cada una con una columna de nombre y una columna de puntaje sobre 10. Si los nombres son otros,
+ el tablero busca «particip», «practic» o «parcial».</p>
 </div>
 
-<footer>
- <div class="wrap">
-  Los datos se procesan en tu navegador y no se envían a ningún servidor. El índice de riesgo
-  es una señal para conversar con el estudiante, nunca una calificación ni un dato para publicar.
- </div>
+<footer class="wrap">
+ Los datos se procesan en tu navegador y no se envían a ningún servidor. Aún así, el índice de
+ riesgo es una alerta para conversar con el estudiante, nunca una calificación ni un dato para
+ publicar.
 </footer>
 
 <script>
@@ -321,16 +267,24 @@ var NOMBRES=["Quispe Mamani, Ana","Choque Apaza, Luis","Condori Flores, Marisol"
 "Alanoca Ramos, Sofía","Tarqui Lima, Gustavo","Sirpa Choquehuanca, Noemí","Villca Gutiérrez, Iván",
 "Calle Mamani, Andrea","Choquehuanca Ríos, Pablo","Gutiérrez Copa, Estefanía","Copa Guarachi, Nelson",
 "Laura Aguilar, Miriam","Ramos Quispe, Alberto","Flores Machaca, Gabriela","Machaca Uño, Sergio"];
-function demo(){
-  var out=[],i,seed=7;
+
+function generarDatos(tipo){
+  var out=[],i,seed = tipo==="A" ? 7 : 42;
   function rnd(){seed=(seed*1103515245+12345)%2147483648;return seed/2147483648}
   for(i=0;i<NOMBRES.length;i++){
     var base=3+rnd()*6.5;
     var part=Math.max(0,Math.min(10,base+(rnd()-.45)*3.5));
     var prac=Math.max(0,Math.min(10,base+(rnd()-.35)*3));
     var parc=Math.max(0,Math.min(10,base+(rnd()-.55)*3.8));
-    if(i%9===0){prac=Math.min(10,prac+3);parc=Math.max(0,parc-2.5);}
-    if(i%11===0){part=Math.max(0,part-4);}
+    if(tipo==="A"){
+      if(i%9===0){prac=Math.min(10,prac+3);parc=Math.max(0,parc-2.5);}
+      if(i%11===0){part=Math.max(0,part-4);}
+    }else{
+      // Grupo B: más casos de incidencia
+      if(i%3===0){part=Math.max(0,part-3);}
+      if(i%4===0){prac=Math.min(10,prac+2.5);parc=Math.max(0,parc-2);}
+      if(i%5===0){parc=Math.max(0,parc-2);}
+    }
     out.push({nombre:NOMBRES[i],part:+part.toFixed(1),prac:+prac.toFixed(1),parc:+parc.toFixed(1)});
   }
   return out;
@@ -408,16 +362,16 @@ function calcular(){
 }
 function recomendar(e,um){
   if(e.part<4 && e.final<um)
-    return "Deserción probable. Conviene un contacto directo esta semana —llamada, no correo— para identificar la causa real de la desconexión antes del segundo parcial. Registrar el motivo.";
+    return "Deserción probable. Contacto directo esta semana (llamada, no correo) para identificar la causa real de la desconexión antes del segundo parcial. Registrar el motivo.";
   if(e.brecha>3)
-    return "Problema de alineación: entrega las prácticas pero no rinde en el parcial. Revisar si las prácticas evalúan lo mismo que el parcial; asignar dos ejercicios de transferencia y una tutoría breve sobre resolución bajo tiempo.";
+    return "Problema de alineación: entrega las prácticas pero no rinde en el parcial. Revisar si las prácticas evalúan lo mismo que el parcial; asignar dos ejercicios de transferencia y una tutoría de 20 minutos sobre resolución bajo tiempo.";
   if(e.final<um && e.part>=6)
     return "Estudiante conectado con bajo rendimiento. Tutoría focalizada en los contenidos del parcial con menor puntaje y reentrega de la práctica más débil.";
   if(e.final<um)
     return "Refuerzo general. Plan de recuperación con metas semanales verificables y una revisión de avance en 15 días.";
   if(e.riesgo>=30)
-    return "Sin riesgo de reprobación, pero con un indicador bajo. Retroalimentación escrita específica sobre el componente más débil.";
-  return "Desempeño sostenido. Puede asumir un rol de apoyo entre pares o una actividad de profundización.";
+    return "Sin riesgo de reprobación pero con un indicador bajo. Retroalimentación escrita específica sobre el componente más débil.";
+  return "Desempeño sostenido. Proponer rol de apoyo entre pares o una actividad de profundización.";
 }
 function color(n){return n==="Alto"?"var(--alto)":n==="Medio"?"var(--medio)":"var(--bajo)"}
 
@@ -432,6 +386,7 @@ function render(){
   $("#rMedio").textContent=DATA.filter(function(e){return e.nivel==="Medio"}).length;
   $("#rPart").textContent=part.toFixed(1);
   strip(); plot(); tabla(); if(SEL) detalle(SEL);
+  $("#csv").disabled = DATA.length===0;
 }
 function strip(){
   var el=$("#strip"), s=DATA.slice().sort(function(a,b){return a.final-b.final});
@@ -450,15 +405,15 @@ function plot(){
   s.push('<rect x="0" y="0" width="'+W+'" height="'+H+'" fill="transparent"/>');
   for(var i=0;i<=10;i+=2){
     var x=m.l+iw*i/10, y=m.t+ih-ih*i/10;
-    s.push('<line x1="'+m.l+'" y1="'+y+'" x2="'+(m.l+iw)+'" y2="'+y+'" stroke="var(--line)"/>');
-    s.push('<line x1="'+x+'" y1="'+m.t+'" x2="'+x+'" y2="'+(m.t+ih)+'" stroke="var(--line)"/>');
-    s.push('<text x="'+(m.l-10)+'" y="'+(y+4)+'" text-anchor="end" font-size="11" fill="var(--ink-soft)">'+i+'</text>');
-    s.push('<text x="'+x+'" y="'+(m.t+ih+20)+'" text-anchor="middle" font-size="11" fill="var(--ink-soft)">'+i+'</text>');
+    s.push('<line class="grid" x1="'+m.l+'" y1="'+y+'" x2="'+(m.l+iw)+'" y2="'+y+'"/>');
+    s.push('<line class="grid" x1="'+x+'" y1="'+m.t+'" x2="'+x+'" y2="'+(m.t+ih)+'"/>');
+    s.push('<text x="'+(m.l-10)+'" y="'+(y+4)+'" text-anchor="end">'+i+'</text>');
+    s.push('<text x="'+x+'" y="'+(m.t+ih+20)+'" text-anchor="middle">'+i+'</text>');
   }
-  s.push('<line x1="'+m.l+'" y1="'+(m.t+ih)+'" x2="'+(m.l+iw)+'" y2="'+(m.t+ih)+'" stroke="var(--ink-soft)"/>');
-  s.push('<line x1="'+m.l+'" y1="'+m.t+'" x2="'+m.l+'" y2="'+(m.t+ih)+'" stroke="var(--ink-soft)"/>');
-  s.push('<text x="'+(m.l+iw/2)+'" y="'+(H-8)+'" text-anchor="middle" font-size="11" fill="var(--ink-soft)">Participación sobre 10</text>');
-  s.push('<text transform="translate(14,'+(m.t+ih/2)+') rotate(-90)" text-anchor="middle" font-size="11" fill="var(--ink-soft)">1er parcial sobre 10</text>');
+  s.push('<line class="axis" x1="'+m.l+'" y1="'+(m.t+ih)+'" x2="'+(m.l+iw)+'" y2="'+(m.t+ih)+'"/>');
+  s.push('<line class="axis" x1="'+m.l+'" y1="'+m.t+'" x2="'+m.l+'" y2="'+(m.t+ih)+'"/>');
+  s.push('<text x="'+(m.l+iw/2)+'" y="'+(H-8)+'" text-anchor="middle">Participación sobre 10</text>');
+  s.push('<text transform="translate(14,'+(m.t+ih/2)+') rotate(-90)" text-anchor="middle">1er parcial sobre 10</text>');
   DATA.forEach(function(e){
     var cx=m.l+iw*e.part/10, cy=m.t+ih-ih*e.parc/10;
     s.push('<circle cx="'+cx.toFixed(1)+'" cy="'+cy.toFixed(1)+'" r="'+(e.nivel==="Alto"?6:5)+
@@ -482,17 +437,11 @@ function tabla(){
   var h=rows.map(function(e){
     return '<tr data-n="'+esc(e.nombre)+'"><td>'+esc(e.nombre)+'</td>'+
       '<td class="n">'+e.part.toFixed(1)+'</td><td class="n">'+e.prac.toFixed(1)+'</td>'+
-      '<td class="n">'+e.parc.toFixed(1)+'</td><td class="n final"><b>'+e.final.toFixed(2)+'</b></td>'+
-      '<td class="n riesgo"><span class="bar" style="width:'+(e.riesgo*.42)+'px;background:'+color(e.nivel)+'"></span><b>'+e.riesgo+'</b></td>'+
+      '<td class="n">'+e.parc.toFixed(1)+'</td><td class="n"><b>'+e.final.toFixed(2)+'</b></td>'+
+      '<td class="n"><span class="bar" style="width:'+(e.riesgo*.42)+'px;background:'+color(e.nivel)+'"></span>'+e.riesgo+'</td>'+
       '<td><span class="chip" style="background:'+color(e.nivel)+'">'+e.nivel+'</span></td></tr>';
   }).join("");
   $("#tbody").innerHTML=h||'<tr><td colspan="7" class="muted">Ningún estudiante coincide con el filtro.</td></tr>';
-  // Contador
-  var total=DATA.length, visibles=rows.length;
-  var filtro_txt = visibles===total
-    ? '<b>'+total+'</b> estudiantes en total'
-    : 'Mostrando <b>'+visibles+'</b> de <b>'+total+'</b> estudiantes';
-  $("#tablecount").innerHTML=filtro_txt;
   Array.prototype.forEach.call($("#tbody").rows,function(tr){
     tr.onclick=function(){
       var e=DATA.filter(function(x){return x.nombre===tr.dataset.n})[0];
@@ -512,8 +461,8 @@ function detalle(e){
    '<div><b class="num">'+e.part.toFixed(1)+'</b><span class="muted">Participación</span></div>'+
    '<div><b class="num">'+e.prac.toFixed(1)+'</b><span class="muted">Prácticas</span></div>'+
    '<div><b class="num">'+e.parc.toFixed(1)+'</b><span class="muted">1er parcial</span></div>'+
-   '<div><b class="num" style="color:var(--accent)">'+e.final.toFixed(2)+'</b><span class="muted">Nota final</span></div>'+
-   '<div><b class="num" style="color:'+color(e.nivel)+'">'+e.riesgo+'</b><span class="muted">Riesgo '+e.nivel.toLowerCase()+'</span></div>'+
+   '<div><b class="num">'+e.final.toFixed(2)+'</b><span class="muted">Nota final</span></div>'+
+   '<div><b class="num" style="color:'+color(e.nivel)+'">'+e.riesgo+'</b><span class="muted">Índice de riesgo ('+e.nivel.toLowerCase()+')</span></div>'+
    '</div><div class="accion"><b>Acción propuesta</b><p style="margin:6px 0 0">'+esc(e.accion)+'</p></div></div>';
 }
 
@@ -522,7 +471,8 @@ function cargar(rows,msg){
   $("#app").hidden=false; $("#empty").hidden=true; $("#status").textContent=msg;
   render();
 }
-$("#demo").onclick=function(){cargar(demo(),"Datos de ejemplo · 32 estudiantes simulados")};
+$("#demo").onclick=function(){cargar(generarDatos("A"),"Datos de ejemplo · 32 estudiantes (grupo A)")};
+$("#demoB").onclick=function(){cargar(generarDatos("B"),"Datos con incidencias · 32 estudiantes (grupo B)")};
 $("#file").onchange=function(ev){
   var f=ev.target.files[0]; if(!f) return;
   var fr=new FileReader();
@@ -538,7 +488,7 @@ $("#file").onchange=function(ev){
   fr.readAsArrayBuffer(f);
 };
 $("#tpl").onclick=function(){
-  var wb=XLSX.utils.book_new(), d=demo();
+  var wb=XLSX.utils.book_new(), d=generarDatos("A");
   function hoja(campo,cab){
     var a=[["Estudiante",cab]];
     d.forEach(function(e){a.push([e.nombre,e[campo]])});
@@ -550,7 +500,10 @@ $("#tpl").onclick=function(){
   XLSX.writeFile(wb,"centralizador-plantilla.xlsx");
 };
 $("#csv").onclick=function(){
-  if(!DATA.length) return;
+  if(!DATA.length){
+    alert("Primero carga datos (Excel o datos de ejemplo).");
+    return;
+  }
   var r=DATA.filter(function(e){return e.nivel!=="Bajo"})
     .sort(function(a,b){return b.riesgo-a.riesgo});
   var l=[["Estudiante","Participacion","Practicas","Parcial","Nota final","Indice","Riesgo","Accion propuesta"]];
@@ -561,7 +514,13 @@ $("#csv").onclick=function(){
   a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));
   a.download="lista-de-riesgo.csv"; a.click();
 };
-$("#print").onclick=function(){window.print()};
+$("#print").onclick=function(){
+  if(!DATA.length){
+    alert("Primero carga datos antes de imprimir el informe.");
+    return;
+  }
+  window.print();
+};
 
 ["wp","wr","wx","wu"].forEach(function(id){
   $("#"+id).oninput=function(){
