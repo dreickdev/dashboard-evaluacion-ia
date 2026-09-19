@@ -1,0 +1,52 @@
+# ─────────────────────────────────────────────
+# Python
+# ─────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+venv/
+env/
+.venv/
+
+# ─────────────────────────────────────────────
+# Scripts de generación (opcional: quítalos si quieres que se vean)
+# ─────────────────────────────────────────────
+# generar_centralizador.py
+# generar_banco.py
+
+# ─────────────────────────────────────────────
+# Archivos temporales del sistema
+# ─────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.swo
+
+# ─────────────────────────────────────────────
+# Editores
+# ─────────────────────────────────────────────
+.vscode/
+.idea/
+*.sublime-*
+
+# ─────────────────────────────────────────────
+# Excel / Word temporales
+# ─────────────────────────────────────────────
+~$*.xlsx
+~$*.docx
+~$*.pptx
+*.tmp
+
+# ─────────────────────────────────────────────
+# Datos generados locales (no subir al repo público)
+# ─────────────────────────────────────────────
+centralizador.xlsx
+lista-de-riesgo.csv
+generar_centralizador.py
